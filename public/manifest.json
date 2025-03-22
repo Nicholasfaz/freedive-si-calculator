@@ -1,6 +1,7 @@
 {
   "name": "Freedive SI Calculator",
   "short_name": "SI Calc",
+  "description": "Calculate surface intervals for technical freediving.",
   "icons": [
     {
       "src": "/icon-192x192.png",
@@ -14,7 +15,8 @@
     }
   ],
   "start_url": "/",
-  "background_color": "#000000",
-  "theme_color": "#000000",
-  "display": "standalone"
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#001f33",
+  "theme_color": "#001f33"
 }
