@@ -17,22 +17,26 @@ const airTable = [
 
 function lookupSurfaceIntervalAir(depthMeters, minutes, seconds) {
   const totalSeconds = minutes * 60 + seconds;
-  const depthFeet = Math.round(depthMeters * 3.28084);
-  const closestDepth = depthsFt.reduce((prev, curr) =>
-    Math.abs(curr - depthFeet) < Math.abs(prev - depthFeet) ? curr : prev
-  );
+  const maxDepthFt = Math.max(...depthsFt);
+  const maxDiveTimeSec = 2 * 60 + 30;
+
+  const depthFt = Math.ceil(depthMeters * 3.28084);
+  const closestDepth = depthsFt.find(d => d >= depthFt);
+
+  if (!closestDepth) return "Depth exceeds available table range";
+  if (totalSeconds > maxDiveTimeSec) return "Dive time exceeds available table range";
 
   let timeStr = null;
   for (let t of diveTimes) {
     const [min, sec] = t.split(":").map(Number);
-    const timeInSeconds = min * 60 + sec;
-    if (totalSeconds <= timeInSeconds) {
+    const tableSeconds = min * 60 + sec;
+    if (totalSeconds <= tableSeconds) {
       timeStr = t;
       break;
     }
   }
 
-  if (!timeStr) return "Dive time too long";
+  if (!timeStr) return "Dive time exceeds available table range";
   const rowIndex = diveTimes.indexOf(timeStr);
   const colIndex = depthsFt.indexOf(closestDepth);
   const result = airTable[rowIndex][colIndex];
