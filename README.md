@@ -1,2 +1,3 @@
-# freedive-si-calculator
-Tech Freediving Table
+# Freedive SI Calculator
+
+A dark-themed progressive web app that calculates freediving surface intervals using Batle-style logic, with depth input in meters.
