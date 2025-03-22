@@ -13,3 +13,9 @@
     "react-dom": "18.2.0"
   }
 }
+"dependencies": {
+  "next": "13.4.12",
+  "react": "18.x.x",
+  "react-dom": "18.x.x",
+  "framer-motion": "^10.16.1"
+}
