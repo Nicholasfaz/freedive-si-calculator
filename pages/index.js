@@ -1,10 +1,44 @@
+
+// Utility: Convert total seconds into mm:ss format
+function formatMinutesToMMSS(totalSeconds) {
+  const min = Math.floor(totalSeconds / 60);
+  const sec = totalSeconds % 60;
+  return `${min}:${sec.toString().padStart(2, '0')}`;
+}
+
+// Sample table (expand this as needed)
+const surfaceIntervalTable = {
+  air: {
+    67: {
+      "2:45": "18:45"
+    }
+  },
+  ean80: {
+    67: {
+      "2:45": "4:53"
+    }
+  }
+};
+
+function getSurfaceInterval(depth, min, sec, gasType) {
+  const roundedDepth = Math.ceil(depth);
+  const formattedTime = formatMinutesToMMSS(min * 60 + sec);
+  const table = surfaceIntervalTable[gasType] || {};
+  const depthRow = table[roundedDepth];
+
+  if (!depthRow) return "Depth out of range.";
+  const result = depthRow[formattedTime];
+  if (!result) return "No matching time found for that depth.";
+
+  return gasType === 'ean80' ? result + "|||Must be off EAN 80 for 2 minutes before diving" : result;
+}
+
+
 // Freedive Surface Interval Calculator — Dark UI Upgrade with PFI Branding + Slide-In Animation
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Depths, Times, Tables from previous chunks (keep as-is)
-
-// Logic functions also stay the same (getSurfaceInterval, formatMinutesToMMSS, etc.)
+// Logic functions will be inserted above this line
 
 export default function Home() {
   const [depth, setDepth] = useState('');
