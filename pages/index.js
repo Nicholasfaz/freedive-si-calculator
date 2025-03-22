@@ -93,6 +93,32 @@ import React, { useState } from 'react';
 // Depths, Times, Tables from previous chunks (keep as-is)
 
 // Logic functions also stay the same (getSurfaceInterval, formatMinutesToMMSS, etc.)
+function formatMinutesToMMSS(minutesFloat) {
+  const totalSeconds = Math.round(minutesFloat * 60);
+  const mins = Math.floor(totalSeconds / 60);
+  const secs = totalSeconds % 60;
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+function getSurfaceInterval(depthMeters, minutes, seconds, gasType) {
+  const totalSeconds = minutes * 60 + seconds;
+
+  const depthMatch = depthsM.find((d) => d >= depthMeters);
+  const timeMatch = diveTimesSec.find((t) => totalSeconds <= t);
+
+  if (!depthMatch || !timeMatch) return "Outside table range";
+
+  const row = diveTimesSec.indexOf(timeMatch);
+  const col = depthsM.indexOf(depthMatch);
+
+  const table = gasType === 'air' ? airSurfaceIntervals : ean80SurfaceIntervals;
+  const value = table[row][col];
+  const formatted = value ? formatMinutesToMMSS(value) : "No data";
+
+  return gasType === 'ean80'
+    ? `${formatted}|||Must be off Enriched Air Nitrox 80% for two full minutes before diving`
+    : formatted;
+}
 
 export default function Home() {
   const [depth, setDepth] = useState('');
