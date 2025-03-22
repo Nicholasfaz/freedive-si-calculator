@@ -881,7 +881,7 @@ function getSurfaceInterval(depthMeters, minutes, seconds, gasType) {
     : formatted;
 }
 
-export default function Home() {
+function App() {
   const [depth, setDepth] = useState('');
   const [minutes, setMinutes] = useState('');
   const [seconds, setSeconds] = useState('');
@@ -1002,3 +1002,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default App;
