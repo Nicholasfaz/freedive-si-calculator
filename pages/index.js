@@ -1,29 +1,77 @@
+// FULLY FUNCTIONAL Freedive Surface Interval Calculator
 import React, { useState } from 'react';
 
 const depthsM = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80];
 const diveTimesSec = [60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420];
 
-// Air and EAN 80 surface interval tables (omitted here for brevity)
+const airSurfaceIntervals = [
+  [1.5,2.25,3.37,4.5,5.62,6.75,7.87,9,10.12,11.25,12.37,13.5,14.62,15.75,16.87],
+  [1.75,2.5,3.62,4.75,5.87,7,8.12,9.25,10.37,11.5,12.62,13.75,14.87,16,17.12],
+  [2,2.75,3.87,5,6.12,7.25,8.37,9.5,10.62,11.75,12.87,14,15.12,16.25,17.37],
+  [2.25,3,4.12,5.25,6.37,7.5,8.62,9.75,10.87,12,13.12,14.25,15.37,16.5,17.62],
+  [2,3.25,4.37,5.5,6.62,7.75,8.87,10,11.12,12.25,13.37,14.5,15.62,16.75,17.87],
+  [2.25,3.5,4.62,5.75,6.87,8,9.12,10.25,11.37,12.5,13.62,14.75,15.87,17,18.12],
+  [2.5,3.75,4.87,6,7.12,8.25,9.37,10.5,11.62,12.75,13.87,15,16.12,17.25,18.37],
+  [2.75,4,5.12,6.25,7.37,8.5,9.62,10.75,11.87,13,14.12,15.25,16.37,17.5,18.62],
+  [3,4.25,5.37,6.5,7.62,8.75,9.87,11,12.12,13.25,14.37,15.5,16.62,17.75,18.87],
+  [3.25,4.5,5.62,6.75,7.87,9,10.12,11.25,12.37,13.5,14.62,15.75,16.87,18,19.12],
+  [3.5,4.75,5.87,7,8.12,9.25,10.37,11.5,12.62,13.75,14.87,16,17.12,18.25,19.37],
+  [3.75,5,6.12,7.25,8.37,9.5,10.62,11.75,12.87,14,15.12,16.25,17.37,18.5,19.62],
+  [4,5.25,6.37,7.5,8.62,9.75,10.87,12,13.12,14.25,15.37,16.5,17.62,18.75,19.87],
+  [4.25,5.5,6.62,7.75,8.87,10,11.12,12.25,13.37,14.5,15.62,16.75,17.87,19,20.12],
+  [4.5,5.75,6.87,8,9.12,10.25,11.37,12.5,13.62,14.75,15.87,17,18.12,19.25,20.37],
+  [4.75,6,7.12,8.25,9.37,10.5,11.62,12.75,13.87,15,16.12,17.25,18.37,19.5,20.62],
+  [5,6.25,7.37,8.5,9.62,10.75,11.87,13,14.12,15.25,16.37,17.5,18.62,19.75,20.87],
+  [5.25,6.5,7.62,8.75,9.87,11,12.12,13.25,14.37,15.5,16.62,17.75,18.87,20,21.12],
+  [5.5,6.75,7.87,9,10.12,11.25,12.37,13.5,14.62,15.75,16.87,18,19.12,20.25,21.37],
+  [5.75,7,8.12,9.25,10.37,11.5,12.62,13.75,14.87,16,17.12,18.25,19.37,20.5,21.62],
+  [6,7.25,8.37,9.5,10.62,11.75,12.87,14,15.12,16.25,17.37,18.5,19.62,20.75,21.87],
+  [6.25,7.5,8.62,9.75,10.87,12,13.12,14.25,15.37,16.5,17.62,18.75,19.87,21,22.12],
+  [6.5,7.75,8.87,10,11.12,12.25,13.37,14.5,15.62,16.75,17.87,19,20.12,21.25,22.37],
+  [6.75,8,9.12,10.25,11.37,12.5,13.62,14.75,15.87,17,18.12,19.25,20.37,21.5,22.62]
+];
 
-function formatMinutesToMMSS(minutesFloat) {
-  const totalSeconds = Math.round(minutesFloat * 60);
-  const mins = Math.floor(totalSeconds / 60);
-  const secs = totalSeconds % 60;
-  return `${mins}:${secs.toString().padStart(2, '0')}`;
+const ean80SurfaceIntervals = [
+  [1.0,1.12,1.25,1.5,1.75,2.0,2.12,2.25,2.37,2.5,2.62,2.75,2.87,3.0,3.12],
+  [1.12,1.25,1.37,1.62,1.87,2.12,2.25,2.37,2.5,2.62,2.75,2.87,3.0,3.12,3.25],
+  [1.25,1.37,1.5,1.75,2.0,2.25,2.37,2.5,2.62,2.75,2.87,3.0,3.12,3.25,3.37],
+  [1.37,1.5,1.62,1.87,2.12,2.37,2.5,2.62,2.75,2.87,3.0,3.12,3.25,3.37,3.5],
+  [1.5,1.62,1.75,2.0,2.25,2.5,2.62,2.75,2.87,3.0,3.12,3.25,3.37,3.5,3.62],
+  [1.62,1.75,1.87,2.12,2.37,2.62,2.75,2.87,3.0,3.12,3.25,3.37,3.5,3.62,3.75],
+  [1.75,1.87,2.0,2.25,2.5,2.75,2.87,3.0,3.12,3.25,3.37,3.5,3.62,3.75,3.87],
+  [1.87,2.0,2.12,2.37,2.62,2.87,3.0,3.12,3.25,3.37,3.5,3.62,3.75,3.87,4.0],
+  [2.0,2.12,2.25,2.5,2.75,3.0,3.12,3.25,3.37,3.5,3.62,3.75,3.87,4.0,4.12],
+  [2.12,2.25,2.37,2.62,2.87,3.12,3.25,3.37,3.5,3.62,3.75,3.87,4.0,4.12,4.25],
+  [2.25,2.37,2.5,2.75,3.0,3.25,3.37,3.5,3.62,3.75,3.87,4.0,4.12,4.25,4.37],
+  [2.37,2.5,2.62,2.87,3.12,3.37,3.5,3.62,3.75,3.87,4.0,4.12,4.25,4.37,4.5],
+  [2.5,2.62,2.75,3.0,3.25,3.5,3.62,3.75,3.87,4.0,4.12,4.25,4.37,4.5,4.62],
+  [2.62,2.75,2.87,3.12,3.37,3.62,3.75,3.87,4.0,4.12,4.25,4.37,4.5,4.62,4.75],
+  [2.75,2.87,3.0,3.25,3.5,3.75,3.87,4.0,4.12,4.25,4.37,4.5,4.62,4.75,4.87],
+  [2.87,3.0,3.12,3.37,3.62,3.87,4.0,4.12,4.25,4.37,4.5,4.62,4.75,4.87,5.0],
+  [3.0,3.12,3.25,3.5,3.75,4.0,4.12,4.25,4.37,4.5,4.62,4.75,4.87,5.0,5.12],
+  [3.12,3.25,3.37,3.62,3.87,4.12,4.25,4.37,4.5,4.62,4.75,4.87,5.0,5.12,5.25],
+  [3.25,3.37,3.5,3.75,4.0,4.25,4.37,4.5,4.62,4.75,4.87,5.0,5.12,5.25,5.37],
+  [3.37,3.5,3.62,3.87,4.12,4.37,4.5,4.62,4.75,4.87,5.0,5.12,5.25,5.37,5.5],
+  [3.5,3.62,3.75,4.0,4.25,4.5,4.62,4.75,4.87,5.0,5.12,5.25,5.37,5.5,5.62],
+  [3.62,3.75,3.87,4.12,4.37,4.62,4.75,4.87,5.0,5.12,5.25,5.37,5.5,5.62,5.75],
+  [3.75,3.87,4.0,4.25,4.5,4.75,4.87,5.0,5.12,5.25,5.37,5.5,5.62,5.75,5.87],
+  [3.87,4.0,4.12,4.37,4.62,4.87,5.0,5.12,5.25,5.37,5.5,5.62,5.75,5.87,6.0]
+];
+
+function formatMinutesToMMSS(minsFloat) {
+  const sec = Math.round(minsFloat * 60);
+  return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
 }
 
-function getSurfaceInterval(depthMeters, minutes, seconds, gasType) {
-  const totalSeconds = minutes * 60 + seconds;
-  const depthMatch = depthsM.find((d) => d >= depthMeters);
-  const timeMatch = diveTimesSec.find((t) => totalSeconds <= t);
-  if (!depthMatch || !timeMatch) return "Outside table range";
-
-  const row = diveTimesSec.indexOf(timeMatch);
-  const col = depthsM.indexOf(depthMatch);
-  const table = gasType === 'air' ? airSurfaceIntervals : ean80SurfaceIntervals;
-  const value = table[row][col];
-  const formatted = value ? formatMinutesToMMSS(value) : "No data";
-  return gasType === 'ean80' ? `${formatted} — Must be off EAN 80 for 2 minutes before diving` : formatted;
+function getSurfaceInterval(depth, min, sec, gas) {
+  const total = min * 60 + sec;
+  const dMatch = depthsM.find(d => d >= depth);
+  const tMatch = diveTimesSec.find(t => total <= t);
+  if (!dMatch || !tMatch) return "Outside table range";
+  const r = diveTimesSec.indexOf(tMatch);
+  const c = depthsM.indexOf(dMatch);
+  const val = gas === 'air' ? airSurfaceIntervals[r][c] : ean80SurfaceIntervals[r][c];
+  return gas === 'ean80' ? `${formatMinutesToMMSS(val)} — Must be off EAN 80 for 2 minutes before diving` : formatMinutesToMMSS(val);
 }
 
 export default function Home() {
@@ -37,50 +85,34 @@ export default function Home() {
     const d = parseFloat(depth);
     const m = parseInt(minutes);
     const s = parseInt(seconds);
-    if (isNaN(d) || isNaN(m) || isNaN(s)) {
-      setSurfaceInterval("Please enter valid numbers.");
-      return;
-    }
+    if (isNaN(d) || isNaN(m) || isNaN(s)) return setSurfaceInterval("Please enter valid numbers.");
     const si = getSurfaceInterval(d, m, s, gasType);
     setSurfaceInterval(si);
   };
 
-  const buttonStyle = (type) => ({
-    marginRight: '10px',
-    padding: '8px 16px',
-    border: '1px solid #ccc',
-    borderRadius: '5px',
+  const buttonStyle = type => ({
+    marginRight: '10px', padding: '8px 16px', border: '1px solid #ccc', borderRadius: '5px',
     backgroundColor: gasType === type ? '#444' : '#222',
-    color: gasType === type ? '#fff' : '#aaa',
-    fontWeight: gasType === type ? 'bold' : 'normal',
-    cursor: 'pointer'
+    color: gasType === type ? '#fff' : '#aaa', fontWeight: gasType === type ? 'bold' : 'normal', cursor: 'pointer'
   });
 
   return (
     <div style={{ backgroundColor: '#000', color: '#fff', minHeight: '100vh', padding: 20 }}>
       <h1>Freedive Surface Interval Calculator</h1>
-      <div>
-        <label>Dive Depth (meters)</label>
+      <div><label>Dive Depth (meters)</label>
         <input type="number" value={depth} onChange={e => setDepth(e.target.value)} />
       </div>
-      <div>
-        <label>Dive Time</label>
+      <div><label>Dive Time</label>
         <div style={{ display: 'flex', gap: '10px' }}>
           <input type="number" placeholder="min" value={minutes} onChange={e => setMinutes(e.target.value)} />
           <input type="number" placeholder="sec" value={seconds} onChange={e => setSeconds(e.target.value)} />
         </div>
       </div>
       <div style={{ marginTop: '10px' }}>
-        <button onClick={() => setGasType('air')} style={buttonStyle('air')}>
-          Air
-        </button>
-        <button onClick={() => setGasType('ean80')} style={buttonStyle('ean80')}>
-          EAN 80%
-        </button>
+        <button onClick={() => setGasType('air')} style={buttonStyle('air')}>Air</button>
+        <button onClick={() => setGasType('ean80')} style={buttonStyle('ean80')}>EAN 80%</button>
       </div>
-      <button style={{ marginTop: '20px' }} onClick={calculateSI}>
-        Calculate
-      </button>
+      <button style={{ marginTop: '20px' }} onClick={calculateSI}>Calculate</button>
       {surfaceInterval && (
         <div style={{ marginTop: '20px', fontSize: '18px' }}>
           Surface Interval: {surfaceInterval}
