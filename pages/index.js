@@ -87,7 +87,12 @@ function getSurfaceInterval(depthMeters, minutes, seconds, gasType) {
     ? `${formatted}|||Must be off Enriched Air Nitrox 80% for two full minutes before diving`
     : formatted;
 }
-// Freedive Surface Interval Calculator (Chunk 4: React Component UI)
+// Freedive Surface Interval Calculator — Dark UI Upgrade with PFI Branding
+import React, { useState } from 'react';
+
+// Depths, Times, Tables from previous chunks (keep as-is)
+
+// Logic functions also stay the same (getSurfaceInterval, formatMinutesToMMSS, etc.)
 
 export default function Home() {
   const [depth, setDepth] = useState('');
@@ -108,14 +113,15 @@ export default function Home() {
     setSurfaceInterval(si);
   };
 
-  const buttonStyle = type => ({
+  const buttonStyle = (type) => ({
     marginRight: '10px',
-    padding: '8px 16px',
-    border: '1px solid #ccc',
-    borderRadius: '5px',
-    backgroundColor: gasType === type ? '#444' : '#222',
-    color: gasType === type ? '#fff' : '#aaa',
+    padding: '10px 20px',
+    border: 'none',
+    borderRadius: '8px',
+    backgroundColor: gasType === type ? '#007acc' : '#1f2a38',
+    color: '#fff',
     fontWeight: gasType === type ? 'bold' : 'normal',
+    boxShadow: gasType === type ? '0 0 10px #007acc' : 'none',
     cursor: 'pointer'
   });
 
@@ -124,61 +130,88 @@ export default function Home() {
     if (surfaceInterval.includes("|||")) {
       const [main, note] = surfaceInterval.split("|||");
       return (
-        <div style={{ marginTop: '20px', fontSize: '18px' }}>
-          Surface Interval: {main}
-          <br />
-          <span style={{ color: 'yellow', fontWeight: 'bold' }}>{note}</span>
+        <div style={{ marginTop: '20px', fontSize: '20px', background: '#112233', padding: '15px', borderRadius: '10px' }}>
+          <div>Surface Interval: <strong>{main}</strong></div>
+          <div style={{ color: 'yellow', fontWeight: 'bold', marginTop: '10px' }}>⚠️ {note}</div>
         </div>
       );
     } else {
       return (
-        <div style={{ marginTop: '20px', fontSize: '18px' }}>
-          Surface Interval: {surfaceInterval}
+        <div style={{ marginTop: '20px', fontSize: '20px', background: '#112233', padding: '15px', borderRadius: '10px' }}>
+          Surface Interval: <strong>{surfaceInterval}</strong>
         </div>
       );
     }
   };
 
   return (
-    <div style={{ backgroundColor: '#000', color: '#fff', minHeight: '100vh', padding: 20 }}>
-      <h1>Freedive Surface Interval Calculator</h1>
-      <div>
-        <label>Dive Depth (meters)</label>
-        <input
-          type="number"
-          value={depth}
-          onChange={e => setDepth(e.target.value)}
-        />
-      </div>
-      <div>
-        <label>Dive Time</label>
-        <div style={{ display: 'flex', gap: '10px' }}>
+    <div style={{ background: 'linear-gradient(to bottom, #001f33, #000)', color: '#fff', minHeight: '100vh', padding: '40px 20px', fontFamily: 'Arial, sans-serif' }}>
+      <div style={{ maxWidth: '500px', margin: '0 auto', background: 'rgba(255,255,255,0.05)', padding: 30, borderRadius: '20px', backdropFilter: 'blur(10px)', boxShadow: '0 0 20px rgba(0,0,0,0.4)' }}>
+        <h1 style={{ textAlign: 'center', marginBottom: 30 }}>Freedive Surface Interval Calculator</h1>
+
+        <div style={{ marginBottom: 20 }}>
+          <label>Dive Depth (meters)</label>
           <input
             type="number"
-            placeholder="min"
-            value={minutes}
-            onChange={e => setMinutes(e.target.value)}
-          />
-          <input
-            type="number"
-            placeholder="sec"
-            value={seconds}
-            onChange={e => setSeconds(e.target.value)}
+            value={depth}
+            onChange={e => setDepth(e.target.value)}
+            style={{ width: '100%', padding: 10, borderRadius: 6, border: '1px solid #333', backgroundColor: '#111', color: '#fff' }}
           />
         </div>
-      </div>
-      <div style={{ marginTop: '10px' }}>
-        <button onClick={() => setGasType('air')} style={buttonStyle('air')}>
-          Air
+
+        <div style={{ marginBottom: 20 }}>
+          <label>Dive Time</label>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <input
+              type="number"
+              placeholder="min"
+              value={minutes}
+              onChange={e => setMinutes(e.target.value)}
+              style={{ flex: 1, padding: 10, borderRadius: 6, border: '1px solid #333', backgroundColor: '#111', color: '#fff' }}
+            />
+            <input
+              type="number"
+              placeholder="sec"
+              value={seconds}
+              onChange={e => setSeconds(e.target.value)}
+              style={{ flex: 1, padding: 10, borderRadius: 6, border: '1px solid #333', backgroundColor: '#111', color: '#fff' }}
+            />
+          </div>
+        </div>
+
+        <div style={{ marginBottom: 20 }}>
+          <label>Gas Type</label>
+          <div style={{ marginTop: 10 }}>
+            <button onClick={() => setGasType('air')} style={buttonStyle('air')}>Air</button>
+            <button onClick={() => setGasType('ean80')} style={buttonStyle('ean80')}>EAN 80%</button>
+          </div>
+        </div>
+
+        <button
+          onClick={calculateSI}
+          style={{ width: '100%', padding: 12, borderRadius: 8, backgroundColor: '#ec1c24', color: '#fff', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', border: 'none', boxShadow: '0 0 10px #ec1c24' }}>
+          Calculate
         </button>
-        <button onClick={() => setGasType('ean80')} style={buttonStyle('ean80')}>
-          EAN 80%
-        </button>
+
+        {renderSurfaceInterval()}
       </div>
-      <button style={{ marginTop: '20px' }} onClick={calculateSI}>
-        Calculate
-      </button>
-      {renderSurfaceInterval()}
+
+      <div style={{
+        position: 'fixed',
+        bottom: 0,
+        width: '100%',
+        background: '#0d1a26',
+        color: '#fff',
+        textAlign: 'center',
+        padding: '10px 0',
+        borderTop: '1px solid #1a2e40',
+        fontSize: '14px',
+        zIndex: 999
+      }}>
+        Powered by <a href="https://www.tdisdi.com/pfi/" target="_blank" rel="noopener noreferrer" style={{ color: '#00bfff', textDecoration: 'underline' }}>
+          Performance Freediving International
+        </a>
+      </div>
     </div>
   );
 }
