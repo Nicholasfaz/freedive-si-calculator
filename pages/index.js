@@ -47,28 +47,28 @@ export default function Home() {
             type="number"
             value={depth}
             onChange={e => setDepth(e.target.value)}
-            style={inputStyle}
+            style={inputStyleFull}
           />
         </label>
 
-        <div style={{ display: 'flex', gap: '6px', justifyContent: 'space-between' }}>
-          <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
+          <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             Minutes:
             <input
               type="number"
               value={minutes}
               onChange={e => setMinutes(e.target.value)}
-              style={smallInputStyle}
+              style={inputStyleSmall}
             />
           </label>
 
-          <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
+          <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             Seconds:
             <input
               type="number"
               value={seconds}
               onChange={e => setSeconds(e.target.value)}
-              style={smallInputStyle}
+              style={inputStyleSmall}
             />
           </label>
         </div>
@@ -116,24 +116,23 @@ export default function Home() {
   );
 }
 
-const inputStyle = {
+const inputStyleFull = {
   width: '100%',
   padding: '10px',
   marginTop: '5px',
   borderRadius: '8px',
   border: '1px solid #ccc',
-  fontSize: '16px',
-  boxSizing: 'border-box'
+  fontSize: '16px'
 };
 
-const smallInputStyle = {
-  width: '80px',
+const inputStyleSmall = {
+  width: '120px',
   padding: '8px',
   marginTop: '5px',
   borderRadius: '8px',
   border: '1px solid #ccc',
   fontSize: '14px',
-  boxSizing: 'border-box'
+  textAlign: 'center'
 };
 
 const buttonStyle = {
