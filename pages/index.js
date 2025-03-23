@@ -1,171 +1,162 @@
 import Head from 'next/head';
 import { useState } from 'react';
-import { getSurfaceInterval } from '../si-logic';
+import { getSurfaceInterval } from '../lib/si-logic';
 
 export default function Home() {
   const [depth, setDepth] = useState('');
   const [minutes, setMinutes] = useState('');
   const [seconds, setSeconds] = useState('');
   const [gasType, setGasType] = useState('air');
-  const [result, setResult] = useState('');
+  const [surfaceInterval, setSurfaceInterval] = useState(null);
 
   const handleCalculate = () => {
-    const si = getSurfaceInterval({ depth, minutes, seconds, gasType });
-    setResult(si);
+    const result = getSurfaceInterval({ depth, minutes, seconds, gasType });
+    setSurfaceInterval(result);
   };
 
   return (
-    <div style={styles.container}>
+    <div style={{
+      background: 'linear-gradient(to bottom, #001f33, #000)',
+      color: '#fff',
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      padding: '40px 20px'
+    }}>
       <Head>
         <title>Freedive Surface Interval Calculator</title>
       </Head>
-      <div style={styles.card}>
-        <h1 style={styles.title}>Surface Interval Calculator</h1>
-        <div style={styles.inputRow}>
+
+      <div style={{
+        background: '#1e1e1e',
+        borderRadius: '12px',
+        padding: '30px 20px',
+        maxWidth: '500px',
+        width: '100%',
+        boxShadow: '0 0 20px rgba(0,0,0,0.5)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '15px'
+      }}>
+        <h1 style={{ textAlign: 'center' }}>Surface Interval Calculator</h1>
+
+        <label>
+          Dive Depth (m):
           <input
             type="number"
-            placeholder="Depth (m)"
             value={depth}
-            onChange={(e) => setDepth(e.target.value)}
-            style={styles.input}
+            onChange={e => setDepth(e.target.value)}
+            style={inputStyle}
           />
+        </label>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <label style={{ flex: 1 }}>
+            Minutes:
+            <input
+              type="number"
+              value={minutes}
+              onChange={e => setMinutes(e.target.value)}
+              style={inputStyle}
+            />
+          </label>
+
+          <label style={{ flex: 1 }}>
+            Seconds:
+            <input
+              type="number"
+              value={seconds}
+              onChange={e => setSeconds(e.target.value)}
+              style={inputStyle}
+            />
+          </label>
         </div>
-        <div style={styles.inputRow}>
-          <input
-            type="number"
-            placeholder="Min"
-            value={minutes}
-            onChange={(e) => setMinutes(e.target.value)}
-            style={styles.inputSmall}
-          />
-          <input
-            type="number"
-            placeholder="Sec"
-            value={seconds}
-            onChange={(e) => setSeconds(e.target.value)}
-            style={styles.inputSmall}
-          />
-        </div>
-        <div style={styles.buttonGroup}>
+
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
           <button
+            style={gasType === 'air' ? activeButton : buttonStyle}
             onClick={() => setGasType('air')}
-            style={{ ...styles.button, backgroundColor: gasType === 'air' ? '#0070f3' : '#333' }}
           >
             Air
           </button>
           <button
+            style={gasType === 'ean80' ? activeButton : buttonStyle}
             onClick={() => setGasType('ean80')}
-            style={{ ...styles.button, backgroundColor: gasType === 'ean80' ? '#0070f3' : '#333' }}
           >
-            80%
+            80% O2
           </button>
         </div>
-        <button onClick={handleCalculate} style={styles.calculateButton}>
+
+        <button onClick={handleCalculate} style={calculateStyle}>
           Calculate
         </button>
-        <div style={styles.result}>
-          <strong>Surface Interval:</strong> {result}
-        </div>
-        <p style={styles.warning}>
-          {gasType === 'ean80' && 'Must be off 80% for 2 minutes breathing air or low/bottom mix'}
-        </p>
-        <p style={styles.disclaimer}>
-          * This tool is for educational use only. Always dive with proper training and supervision.
-        </p>
-        <footer style={styles.footer}>
-          <a href="https://performancefreediving.com" target="_blank" rel="noopener noreferrer">
-            <img src="/pfi-logo.png" alt="PFI Logo" style={styles.logo} />
-          </a>
-          <p>App Creator: Nick Fazah — IT 9870</p>
-        </footer>
+
+        {surfaceInterval && (
+          <div style={resultBox}>
+            <strong>Surface Interval:</strong> {surfaceInterval}
+            {gasType === 'ean80' && (
+              <div style={{ marginTop: '10px', fontSize: '14px', color: '#ffcc00' }}>
+                Must be off 80% for 2 minutes breathing air or low/bottom mix
+              </div>
+            )}
+          </div>
+        )}
       </div>
+
+      <footer style={{ marginTop: '40px', textAlign: 'center', fontSize: '14px', color: '#aaa' }}>
+        <p>
+          Created by Nick Fazah (IT 9870) | Data by Performance Freediving International
+        </p>
+        <a href="https://www.performancefreediving.com/" target="_blank" rel="noopener noreferrer">
+          <img src="/pfi-logo.png" alt="PFI Logo" style={{ height: '60px', marginTop: '10px' }} />
+        </a>
+      </footer>
     </div>
   );
 }
 
-const styles = {
-  container: {
-    background: 'linear-gradient(to bottom, #001f33, #000)',
-    color: '#fff',
-    minHeight: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: '40px 20px',
-  },
-  card: {
-    backgroundColor: '#1c2735',
-    padding: '30px',
-    borderRadius: '12px',
-    boxShadow: '0 0 20px rgba(0,0,0,0.6)',
-    maxWidth: '400px',
-    width: '100%',
-    textAlign: 'center',
-  },
-  title: {
-    fontSize: '24px',
-    marginBottom: '20px',
-  },
-  inputRow: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '10px',
-    marginBottom: '10px',
-  },
-  input: {
-    padding: '10px',
-    fontSize: '16px',
-    width: '80%',
-  },
-  inputSmall: {
-    padding: '10px',
-    fontSize: '16px',
-    width: '48%',
-  },
-  buttonGroup: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '10px',
-    marginBottom: '15px',
-  },
-  button: {
-    padding: '10px 20px',
-    color: '#fff',
-    border: 'none',
-    cursor: 'pointer',
-    borderRadius: '4px',
-  },
-  calculateButton: {
-    marginTop: '10px',
-    padding: '10px 30px',
-    fontSize: '16px',
-    backgroundColor: '#ec1c24',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '6px',
-    cursor: 'pointer',
-  },
-  result: {
-    marginTop: '20px',
-    fontSize: '18px',
-  },
-  warning: {
-    marginTop: '10px',
-    fontSize: '14px',
-    color: '#f0c040',
-  },
-  disclaimer: {
-    marginTop: '20px',
-    fontSize: '12px',
-    color: '#aaa',
-  },
-  footer: {
-    marginTop: '20px',
-    fontSize: '12px',
-    color: '#ccc',
-  },
-  logo: {
-    height: '40px',
-    marginBottom: '10px',
-  },
+const inputStyle = {
+  width: '100%',
+  padding: '10px',
+  marginTop: '5px',
+  borderRadius: '8px',
+  border: '1px solid #ccc',
+  fontSize: '16px'
+};
+
+const buttonStyle = {
+  padding: '10px 20px',
+  borderRadius: '8px',
+  background: '#333',
+  color: '#fff',
+  border: '1px solid #666',
+  cursor: 'pointer'
+};
+
+const activeButton = {
+  ...buttonStyle,
+  background: '#0066cc',
+  borderColor: '#004c99'
+};
+
+const calculateStyle = {
+  marginTop: '10px',
+  padding: '12px 20px',
+  width: '100%',
+  background: 'linear-gradient(to right, #00bfff, #0066cc)',
+  color: '#fff',
+  border: 'none',
+  borderRadius: '10px',
+  fontSize: '18px',
+  cursor: 'pointer'
+};
+
+const resultBox = {
+  marginTop: '20px',
+  padding: '15px',
+  background: '#004466',
+  borderRadius: '10px',
+  fontSize: '18px',
+  textAlign: 'center'
 };
