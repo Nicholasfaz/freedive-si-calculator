@@ -51,24 +51,24 @@ export default function Home() {
           />
         </label>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <label style={{ flex: 1 }}>
+        <div style={{ display: 'flex', gap: '6px', justifyContent: 'space-between' }}>
+          <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
             Minutes:
             <input
               type="number"
               value={minutes}
               onChange={e => setMinutes(e.target.value)}
-              style={inputStyle}
+              style={smallInputStyle}
             />
           </label>
 
-          <label style={{ flex: 1 }}>
+          <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
             Seconds:
             <input
               type="number"
               value={seconds}
               onChange={e => setSeconds(e.target.value)}
-              style={inputStyle}
+              style={smallInputStyle}
             />
           </label>
         </div>
@@ -116,14 +116,24 @@ export default function Home() {
   );
 }
 
-// Input box style (reduced size by 25%)
 const inputStyle = {
   width: '100%',
-  padding: '7.5px',
+  padding: '10px',
   marginTop: '5px',
   borderRadius: '8px',
   border: '1px solid #ccc',
-  fontSize: '12px'
+  fontSize: '16px',
+  boxSizing: 'border-box'
+};
+
+const smallInputStyle = {
+  width: '80px',
+  padding: '8px',
+  marginTop: '5px',
+  borderRadius: '8px',
+  border: '1px solid #ccc',
+  fontSize: '14px',
+  boxSizing: 'border-box'
 };
 
 const buttonStyle = {
