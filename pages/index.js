@@ -1,7 +1,7 @@
-
 import Head from 'next/head';
 import { useState } from 'react';
 import { getSurfaceInterval } from '../lib/si-logic';
+import Image from 'next/image';
 
 export default function Home() {
   const [depth, setDepth] = useState('');
@@ -11,152 +11,203 @@ export default function Home() {
   const [result, setResult] = useState('');
 
   const handleCalculate = () => {
-    const input = {
-      depth,
-      minutes,
-      seconds,
-      gasType
-    };
-    const interval = getSurfaceInterval(input);
+    const interval = getSurfaceInterval({ depth, minutes, seconds, gasType });
     setResult(interval);
   };
 
   return (
-    <>
+    <div>
       <Head>
         <title>PFI Technical Freediving SIT Calc</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
-      <div style={{
-        background: 'linear-gradient(to bottom, #001f33, #000)',
-        color: '#fff',
-        minHeight: '100vh',
-        padding: '40px 20px',
-        fontFamily: 'Arial, sans-serif'
-      }}>
-        <div style={{
-          maxWidth: '500px',
-          margin: '0 auto',
-          background: 'rgba(255,255,255,0.05)',
-          padding: 30,
-          borderRadius: '20px',
-          backdropFilter: 'blur(10px)',
-          boxShadow: '0 0 20px rgba(0,0,0,0.4)'
-        }}>
-          <div style={{ textAlign: 'center', marginBottom: 20 }}>
-            <img src="/pfi-logo.png" alt="PFI Logo" style={{ width: 150, marginBottom: 10 }} />
+
+      <main className="main">
+        <div className="container">
+          <div className="logo-wrapper">
+            <Image src="/pfi-logo.png" alt="PFI Logo" width={160} height={60} className="logo" />
           </div>
-          <h1 style={{ textAlign: 'center', marginBottom: 30 }}>Freedive Surface Interval Calculator</h1>
-          <div style={{ marginBottom: 20 }}>
-            <label>Depth (m)</label>
+
+          <h1 className="title">Surface Interval Calculator</h1>
+
+          <div className="input-group">
             <input
               type="number"
+              placeholder="Depth (m)"
               value={depth}
               onChange={(e) => setDepth(e.target.value)}
-              placeholder="Enter depth in meters"
-              style={{
-                width: '100%',
-                padding: 10,
-                borderRadius: 5,
-                border: 'none',
-                marginTop: 5
-              }}
+              className="input depth"
+            />
+            <input
+              type="number"
+              placeholder="Min"
+              value={minutes}
+              onChange={(e) => setMinutes(e.target.value)}
+              className="input time"
+            />
+            <input
+              type="number"
+              placeholder="Sec"
+              value={seconds}
+              onChange={(e) => setSeconds(e.target.value)}
+              className="input time"
             />
           </div>
-          <div style={{ marginBottom: 20 }}>
-            <label>Time (min:sec)</label>
-            <div style={{ display: 'flex', gap: 10, marginTop: 5 }}>
-              <input
-                type="number"
-                value={minutes}
-                onChange={(e) => setMinutes(e.target.value)}
-                placeholder="min"
-                style={{
-                  flex: 1,
-                  padding: 10,
-                  borderRadius: 5,
-                  border: 'none'
-                }}
-              />
-              <input
-                type="number"
-                value={seconds}
-                onChange={(e) => setSeconds(e.target.value)}
-                placeholder="sec"
-                style={{
-                  flex: 1,
-                  padding: 10,
-                  borderRadius: 5,
-                  border: 'none'
-                }}
-              />
-            </div>
+
+          <div className="dropdown-wrapper">
+            <label htmlFor="gasType">Recovery Gas:</label>
+            <select id="gasType" value={gasType} onChange={(e) => setGasType(e.target.value)}>
+              <option value="air">Air</option>
+              <option value="ean80">EAN 80</option>
+            </select>
           </div>
-          <div style={{ marginBottom: 20 }}>
-            <label>Recovery Gas</label>
-            <div style={{ marginTop: 10, display: 'flex', gap: 10 }}>
-              <button onClick={() => setGasType('air')} style={{
-                flex: 1,
-                padding: 10,
-                backgroundColor: gasType === 'air' ? '#00aaff' : '#00334d',
-                color: '#fff',
-                border: 'none',
-                borderRadius: 5
-              }}>Air</button>
-              <button onClick={() => setGasType('ean80')} style={{
-                flex: 1,
-                padding: 10,
-                backgroundColor: gasType === 'ean80' ? '#00aaff' : '#00334d',
-                color: '#fff',
-                border: 'none',
-                borderRadius: 5
-              }}>EAN 80%</button>
-            </div>
-          </div>
-          <button onClick={handleCalculate} style={{
-            width: '100%',
-            padding: 12,
-            backgroundColor: '#EC1C24',
-            color: '#fff',
-            fontWeight: 'bold',
-            border: 'none',
-            borderRadius: 5,
-            marginTop: 10,
-            fontSize: 16
-          }}>Calculate</button>
+
+          <button onClick={handleCalculate} className="button">
+            Calculate
+          </button>
 
           {result && (
-            <div style={{
-              marginTop: 20,
-              padding: 15,
-              background: '#004466',
-              borderRadius: 8,
-              textAlign: 'center',
-              fontSize: 18
-            }}>
-              Surface Interval: {result}
-              {gasType === 'ean80' && <div style={{ marginTop: 10, fontSize: 14, color: '#ffcc00' }}>
-                Must be off 80% for 2 minutes breathing air or low/bottom mix.
-              </div>}
+            <div className="result-box">
+              <strong>Surface Interval:</strong> {result}
             </div>
           )}
 
-          <div style={{
-            marginTop: 30,
-            fontSize: 12,
-            color: '#ccc',
-            textAlign: 'center'
-          }}>
-            This calculator is for educational use only. Always consult a qualified instructor.
-          </div>
+          {gasType === 'ean80' && (
+            <p className="warning">
+              * Must be off 80% for 2 minutes breathing air or low/bottom mix
+            </p>
+          )}
+
+          <p className="disclaimer">
+            This calculator is for educational purposes only. Do not use it to plan actual dives.
+          </p>
         </div>
 
-        <footer style={{ marginTop: 40, textAlign: 'center', fontSize: 14, color: '#aaa' }}>
-          <div>
-            Created by Nick Fazah – IT 9870 • <a href="https://www.performancefreediving.com" target="_blank" rel="noopener noreferrer" style={{ color: '#00aaff' }}>Performance Freediving International</a>
-          </div>
+        <footer className="footer">
+          <p>App creator: Nick Fazah IT 9870</p>
+          <a href="https://www.performancefreediving.com/" target="_blank" rel="noopener noreferrer">
+            <Image src="/pfi-logo.png" alt="PFI Logo" width={100} height={40} className="footer-logo" />
+          </a>
         </footer>
-      </div>
-    </>
+
+        <style jsx>{`
+          .main {
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #001f33, #000);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+          }
+
+          .container {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            text-align: center;
+          }
+
+          .logo-wrapper {
+            margin-bottom: 20px;
+          }
+
+          .logo {
+            max-width: 100%;
+            height: auto;
+          }
+
+          .title {
+            margin-bottom: 20px;
+          }
+
+          .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+          }
+
+          .input {
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1rem;
+          }
+
+          .depth {
+            width: 100%;
+          }
+
+          .time {
+            width: 45%;
+          }
+
+          .dropdown-wrapper {
+            margin-bottom: 20px;
+          }
+
+          .button {
+            padding: 12px 20px;
+            background: #ec1c24;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: background 0.3s;
+          }
+
+          .button:hover {
+            background: #d81a20;
+          }
+
+          .result-box {
+            background: #fff;
+            color: #000;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+          }
+
+          .warning {
+            color: #ffa500;
+            margin-top: 10px;
+          }
+
+          .disclaimer {
+            font-size: 0.8rem;
+            color: #ccc;
+            margin-top: 10px;
+          }
+
+          .footer {
+            margin-top: 30px;
+            text-align: center;
+          }
+
+          .footer-logo {
+            margin-top: 10px;
+          }
+
+          @media (max-width: 480px) {
+            .input-group {
+              flex-direction: column;
+            }
+
+            .time {
+              width: 100%;
+            }
+          }
+        `}</style>
+      </main>
+    </div>
   );
 }
