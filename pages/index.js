@@ -47,7 +47,7 @@ export default function Home() {
             type="number"
             value={depth}
             onChange={e => setDepth(e.target.value)}
-            style={inputStyle}
+            style={inputStyleSmall}
           />
         </label>
 
@@ -58,7 +58,7 @@ export default function Home() {
               type="number"
               value={minutes}
               onChange={e => setMinutes(e.target.value)}
-              style={smallInputStyle}
+              style={inputStyleSmall}
             />
           </label>
 
@@ -68,7 +68,7 @@ export default function Home() {
               type="number"
               value={seconds}
               onChange={e => setSeconds(e.target.value)}
-              style={smallInputStyle}
+              style={inputStyleSmall}
             />
           </label>
         </div>
@@ -116,19 +116,13 @@ export default function Home() {
   );
 }
 
-const inputStyle = {
+const inputStyleSmall = {
   width: '100%',
-  padding: '12px',
+  padding: '8px',
   marginTop: '5px',
-  borderRadius: '8px',
+  borderRadius: '6px',
   border: '1px solid #ccc',
-  fontSize: '18px'
-};
-
-const smallInputStyle = {
-  ...inputStyle,
-  padding: '10px',
-  fontSize: '16px'
+  fontSize: '14px'
 };
 
 const buttonStyle = {
