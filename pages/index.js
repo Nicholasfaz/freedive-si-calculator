@@ -58,7 +58,7 @@ export default function Home() {
               type="number"
               value={minutes}
               onChange={e => setMinutes(e.target.value)}
-              style={inputStyle}
+              style={smallInputStyle}
             />
           </label>
 
@@ -68,7 +68,7 @@ export default function Home() {
               type="number"
               value={seconds}
               onChange={e => setSeconds(e.target.value)}
-              style={inputStyle}
+              style={smallInputStyle}
             />
           </label>
         </div>
@@ -118,10 +118,16 @@ export default function Home() {
 
 const inputStyle = {
   width: '100%',
-  padding: '10px',
+  padding: '12px',
   marginTop: '5px',
   borderRadius: '8px',
   border: '1px solid #ccc',
+  fontSize: '18px'
+};
+
+const smallInputStyle = {
+  ...inputStyle,
+  padding: '10px',
   fontSize: '16px'
 };
 
