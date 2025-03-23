@@ -41,34 +41,36 @@ export default function Home() {
       }}>
         <h1 style={{ textAlign: 'center' }}>Surface Interval Calculator</h1>
 
-        <label>
-          Dive Depth (m):
-          <input
-            type="number"
-            value={depth}
-            onChange={e => setDepth(e.target.value)}
-            style={inputStyleFull}
-          />
-        </label>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <label>
+            Dive Depth (m):
+            <input
+              type="number"
+              value={depth}
+              onChange={e => setDepth(e.target.value)}
+              style={inputStyleDepth}
+            />
+          </label>
+        </div>
 
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
-          <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <label style={{ flex: 1 }}>
             Minutes:
             <input
               type="number"
               value={minutes}
               onChange={e => setMinutes(e.target.value)}
-              style={inputStyleSmall}
+              style={inputStyle}
             />
           </label>
 
-          <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <label style={{ flex: 1 }}>
             Seconds:
             <input
               type="number"
               value={seconds}
               onChange={e => setSeconds(e.target.value)}
-              style={inputStyleSmall}
+              style={inputStyle}
             />
           </label>
         </div>
@@ -84,7 +86,7 @@ export default function Home() {
             style={gasType === 'ean80' ? activeButton : buttonStyle}
             onClick={() => setGasType('ean80')}
           >
-            80% O2
+            80% O₂
           </button>
         </div>
 
@@ -116,16 +118,7 @@ export default function Home() {
   );
 }
 
-const inputStyleFull = {
-  width: '100%',
-  padding: '10px',
-  marginTop: '5px',
-  borderRadius: '8px',
-  border: '1px solid #ccc',
-  fontSize: '16px'
-};
-
-const inputStyleSmall = {
+const inputStyleDepth = {
   width: '120px',
   padding: '8px',
   marginTop: '5px',
@@ -133,6 +126,15 @@ const inputStyleSmall = {
   border: '1px solid #ccc',
   fontSize: '14px',
   textAlign: 'center'
+};
+
+const inputStyle = {
+  width: '100%',
+  padding: '10px',
+  marginTop: '5px',
+  borderRadius: '8px',
+  border: '1px solid #ccc',
+  fontSize: '16px'
 };
 
 const buttonStyle = {
