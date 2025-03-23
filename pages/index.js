@@ -1,4 +1,3 @@
-
 import Head from 'next/head';
 import { useState } from 'react';
 import { getSurfaceInterval } from '../lib/si-logic';
@@ -10,127 +9,136 @@ export default function Home() {
   const [gasType, setGasType] = useState('air');
   const [result, setResult] = useState('');
 
-  const handleCalculate = () => {
-    const data = {
-      depth,
-      minutes,
-      seconds,
+  const handleCalculate = (e) => {
+    e.preventDefault();
+    console.log("Sending to getSurfaceInterval:", { depth, minutes, seconds, gasType });
+    const interval = getSurfaceInterval({
+      depth: Number(depth),
+      minutes: Number(minutes),
+      seconds: Number(seconds),
       gasType
-    };
-    const interval = getSurfaceInterval(data);
+    });
     setResult(interval);
   };
 
   return (
-    <>
+    <div style={{
+      background: 'linear-gradient(to bottom, #001f33, #000)',
+      color: '#fff',
+      minHeight: '100vh',
+      fontFamily: 'Arial, sans-serif',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '20px'
+    }}>
       <Head>
         <title>PFI Technical Freediving SIT Calc</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
+
       <div style={{
-        background: 'linear-gradient(to bottom, #001f33, #000)',
-        color: '#fff',
-        minHeight: '100vh',
-        padding: '20px',
-        fontFamily: 'Arial, sans-serif',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center'
+        maxWidth: '400px',
+        width: '100%',
+        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+        padding: '30px',
+        borderRadius: '12px',
+        boxShadow: '0 0 20px rgba(0,0,0,0.4)',
+        backdropFilter: 'blur(10px)'
       }}>
-        <div style={{
-          maxWidth: '500px',
-          width: '100%',
-          background: 'rgba(255,255,255,0.05)',
-          padding: 20,
-          borderRadius: '20px',
-          backdropFilter: 'blur(10px)',
-          boxShadow: '0 0 20px rgba(0,0,0,0.4)'
-        }}>
-          <img src="/pfi-logo.png" alt="PFI Logo" style={{ width: '100px', margin: '0 auto 20px', display: 'block' }} />
-          <h1 style={{ textAlign: 'center', marginBottom: 30 }}>Freedive Surface Interval Calculator</h1>
-          <label>Depth (m)</label>
+        <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Freedive Surface Interval Calculator</h1>
+
+        <form onSubmit={handleCalculate}>
+          <label>Depth (m):</label>
           <input
             type="number"
             value={depth}
             onChange={(e) => setDepth(e.target.value)}
-            placeholder="Enter depth"
-            style={{ width: '100%', padding: 10, marginBottom: 10, borderRadius: 8, border: 'none' }}
+            required
+            min="1"
+            style={{ width: '100%', padding: '8px', marginBottom: '10px' }}
           />
+
           <div style={{ display: 'flex', gap: '10px' }}>
             <div style={{ flex: 1 }}>
-              <label>Minutes</label>
+              <label>Minutes:</label>
               <input
                 type="number"
                 value={minutes}
                 onChange={(e) => setMinutes(e.target.value)}
-                placeholder="Min"
-                style={{ width: '100%', padding: 10, marginBottom: 10, borderRadius: 8, border: 'none' }}
+                required
+                style={{ width: '100%', padding: '8px' }}
               />
             </div>
             <div style={{ flex: 1 }}>
-              <label>Seconds</label>
+              <label>Seconds:</label>
               <input
                 type="number"
                 value={seconds}
                 onChange={(e) => setSeconds(e.target.value)}
-                placeholder="Sec"
-                style={{ width: '100%', padding: 10, marginBottom: 10, borderRadius: 8, border: 'none' }}
+                required
+                style={{ width: '100%', padding: '8px' }}
               />
             </div>
           </div>
-          <label>Recovery Gas</label>
+
+          <label style={{ marginTop: '10px', display: 'block' }}>Recovery Gas:</label>
           <select
             value={gasType}
             onChange={(e) => setGasType(e.target.value)}
-            style={{ width: '100%', padding: 10, marginBottom: 20, borderRadius: 8, border: 'none' }}
+            style={{ width: '100%', padding: '8px', marginBottom: '15px' }}
           >
             <option value="air">Air</option>
-            <option value="ean80">EAN 80</option>
+            <option value="ean80">EAN80</option>
           </select>
+
           <button
-            onClick={handleCalculate}
+            type="submit"
             style={{
               width: '100%',
-              padding: 15,
-              background: 'linear-gradient(to right, #EC1C24, #d81a20)',
-              color: '#fff',
+              padding: '12px',
+              backgroundColor: '#EC1C24',
               border: 'none',
-              borderRadius: 10,
+              borderRadius: '6px',
+              color: '#fff',
+              fontSize: '16px',
               fontWeight: 'bold',
               cursor: 'pointer'
             }}
           >
             Calculate
           </button>
-          {result && (
-            <div style={{
-              marginTop: 20,
-              padding: 15,
-              background: '#0a2c47',
-              borderRadius: 10,
-              textAlign: 'center',
-              fontSize: '1.5em',
-              fontWeight: 'bold'
-            }}>
-              Surface Interval: {result}
-            </div>
-          )}
-          {gasType === 'ean80' && result && (
-            <p style={{ marginTop: 10, color: '#ffc107' }}>
-              Must be off 80% for 2 minutes breathing air or low/bottom mix.
-            </p>
-          )}
-          <p style={{ fontSize: '0.85em', color: '#aaa', marginTop: 15 }}>
-            This calculator is for reference only. Always dive within your training limits.
-          </p>
-        </div>
-        <footer style={{ marginTop: 30, textAlign: 'center', fontSize: '0.9em', color: '#ccc' }}>
-          <p>App Creator: Nick Fazah, IT 9870</p>
-          <a href="https://www.performancefreediving.com/" target="_blank" rel="noopener noreferrer" style={{ color: '#4fc3f7' }}>
-            Performance Freediving International
+        </form>
+
+        {result && (
+          <div style={{
+            backgroundColor: '#fff',
+            color: '#000',
+            marginTop: '20px',
+            padding: '12px',
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: '18px',
+            borderRadius: '8px'
+          }}>
+            Surface Interval: {result}
+          </div>
+        )}
+
+        <p style={{ marginTop: '10px', fontSize: '12px', color: '#ccc', textAlign: 'center' }}>
+          {gasType === 'ean80' && 'Must be off 80% for 2 minutes breathing air or low/bottom mix'}
+        </p>
+
+        <p style={{ marginTop: '20px', fontSize: '12px', color: '#aaa', textAlign: 'center' }}>
+          App created by Nick Fazah – IT 9870
+        </p>
+
+        <footer style={{ marginTop: '20px', textAlign: 'center' }}>
+          <a href="https://www.performancefreediving.com" target="_blank" rel="noopener noreferrer">
+            <img src="/pfi-logo.png" alt="PFI Logo" style={{ maxWidth: '120px', height: 'auto' }} />
           </a>
         </footer>
       </div>
-    </>
+    </div>
   );
 }
