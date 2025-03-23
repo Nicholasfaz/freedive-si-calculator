@@ -41,36 +41,34 @@ export default function Home() {
       }}>
         <h1 style={{ textAlign: 'center' }}>Surface Interval Calculator</h1>
 
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <label>
-            Dive Depth (m):
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <label style={{ flex: 1, minWidth: '100px' }}>
+            Depth (m):
             <input
               type="number"
               value={depth}
               onChange={e => setDepth(e.target.value)}
-              style={inputStyleDepth}
+              style={inputStyleSmall}
             />
           </label>
-        </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <label style={{ flex: 1 }}>
+          <label style={{ flex: 1, minWidth: '100px' }}>
             Minutes:
             <input
               type="number"
               value={minutes}
               onChange={e => setMinutes(e.target.value)}
-              style={inputStyle}
+              style={inputStyleSmall}
             />
           </label>
 
-          <label style={{ flex: 1 }}>
+          <label style={{ flex: 1, minWidth: '100px' }}>
             Seconds:
             <input
               type="number"
               value={seconds}
               onChange={e => setSeconds(e.target.value)}
-              style={inputStyle}
+              style={inputStyleSmall}
             />
           </label>
         </div>
@@ -118,23 +116,13 @@ export default function Home() {
   );
 }
 
-const inputStyleDepth = {
-  width: '120px',
-  padding: '8px',
-  marginTop: '5px',
-  borderRadius: '8px',
-  border: '1px solid #ccc',
-  fontSize: '14px',
-  textAlign: 'center'
-};
-
-const inputStyle = {
+const inputStyleSmall = {
   width: '100%',
-  padding: '10px',
+  padding: '6px',
   marginTop: '5px',
-  borderRadius: '8px',
+  borderRadius: '6px',
   border: '1px solid #ccc',
-  fontSize: '16px'
+  fontSize: '14px'
 };
 
 const buttonStyle = {
