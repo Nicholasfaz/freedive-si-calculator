@@ -7,156 +7,99 @@ export default function Home() {
   const [minutes, setMinutes] = useState('');
   const [seconds, setSeconds] = useState('');
   const [gasType, setGasType] = useState('air');
-  const [surfaceInterval, setSurfaceInterval] = useState(null);
+  const [result, setResult] = useState('');
 
   const handleCalculate = () => {
-    const result = getSurfaceInterval({ depth, minutes, seconds, gasType });
-    setSurfaceInterval(result);
+    const interval = getSurfaceInterval({ depth, minutes, seconds, gasType });
+    setResult(interval);
   };
 
   return (
-    <div style={{
-      background: 'linear-gradient(to bottom, #001f33, #000)',
-      color: '#fff',
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      padding: '40px 20px'
-    }}>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black text-white p-4">
       <Head>
         <title>Freedive Surface Interval Calculator</title>
+        <meta name="description" content="Freedive Surface Interval Calculator" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div style={{
-        background: '#1e1e1e',
-        borderRadius: '12px',
-        padding: '30px 20px',
-        maxWidth: '500px',
-        width: '100%',
-        boxShadow: '0 0 20px rgba(0,0,0,0.5)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '15px'
-      }}>
-        <h1 style={{ textAlign: 'center' }}>Surface Interval Calculator</h1>
+      <main className="bg-gray-800 shadow-lg rounded-2xl p-8 max-w-md w-full text-center">
+        <img
+          src="/pfi.png"
+          alt="Performance Freediving International"
+          className="mx-auto mb-6 w-48 h-auto"
+        />
 
-        <label>
-          Dive Depth (m):
+        <h1 className="text-3xl font-bold mb-4">Surface Interval Calculator</h1>
+
+        <div className="grid grid-cols-2 gap-4 mb-4">
           <input
             type="number"
             value={depth}
-            onChange={e => setDepth(e.target.value)}
-            style={inputStyle}
+            onChange={(e) => setDepth(e.target.value)}
+            placeholder="Depth (m)"
+            className="p-2 rounded-md text-black text-center text-sm"
           />
-        </label>
-
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <label style={{ flex: 1 }}>
-            Minutes:
-            <input
-              type="number"
-              value={minutes}
-              onChange={e => setMinutes(e.target.value)}
-              style={inputStyle}
-            />
-          </label>
-
-          <label style={{ flex: 1 }}>
-            Seconds:
-            <input
-              type="number"
-              value={seconds}
-              onChange={e => setSeconds(e.target.value)}
-              style={inputStyle}
-            />
-          </label>
+          <input
+            type="number"
+            value={minutes}
+            onChange={(e) => setMinutes(e.target.value)}
+            placeholder="Minutes"
+            className="p-2 rounded-md text-black text-center text-sm"
+          />
+          <input
+            type="number"
+            value={seconds}
+            onChange={(e) => setSeconds(e.target.value)}
+            placeholder="Seconds"
+            className="p-2 rounded-md text-black text-center text-sm"
+          />
+          <div className="flex gap-2 justify-center">
+            <button
+              onClick={() => setGasType('air')}
+              className={`px-3 py-1 rounded-full text-sm font-semibold transition ${
+                gasType === 'air' ? 'bg-red-600' : 'bg-gray-600'
+              }`}
+            >
+              Air
+            </button>
+            <button
+              onClick={() => setGasType('ean80')}
+              className={`px-3 py-1 rounded-full text-sm font-semibold transition ${
+                gasType === 'ean80' ? 'bg-red-600' : 'bg-gray-600'
+              }`}
+            >
+              80%
+            </button>
+          </div>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
-          <button
-            style={gasType === 'air' ? activeButton : buttonStyle}
-            onClick={() => setGasType('air')}
-          >
-            Air
-          </button>
-          <button
-            style={gasType === 'ean80' ? activeButton : buttonStyle}
-            onClick={() => setGasType('ean80')}
-          >
-            80% O2
-          </button>
-        </div>
-
-        <button onClick={handleCalculate} style={calculateStyle}>
+        <button
+          onClick={handleCalculate}
+          className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition mb-4"
+        >
           Calculate
         </button>
 
-        {surfaceInterval && (
-          <div style={resultBox}>
-            <strong>Surface Interval:</strong> {surfaceInterval}
-            {gasType === 'ean80' && (
-              <div style={{ marginTop: '10px', fontSize: '14px', color: '#ffcc00' }}>
-                Must be off 80% for 2 minutes breathing air or low/bottom mix
-              </div>
-            )}
+        {result && (
+          <div className="mt-4 text-lg font-semibold text-white bg-black bg-opacity-20 p-4 rounded">
+            Surface Interval: {result}
           </div>
         )}
-      </div>
 
-      <footer style={{ marginTop: '40px', textAlign: 'center', fontSize: '14px', color: '#aaa' }}>
-        <p>
-          Created by Nick Fazah (IT 9870) | Data by Performance Freediving International
+        {gasType === 'ean80' && (
+          <div className="mt-2 text-xs text-red-400 italic">
+            Must be off 80% for 2 minutes breathing air or low/bottom mix
+          </div>
+        )}
+
+        <p className="mt-8 text-xs text-gray-400">
+          This calculator is intended for freediving recovery only. Do not use for scuba or technical diving.
         </p>
-        <a href="https://www.performancefreediving.com/" target="_blank" rel="noopener noreferrer">
-          <img src="/pfi-logo.png" alt="PFI Logo" style={{ height: '60px', marginTop: '10px' }} />
-        </a>
-      </footer>
+
+        <footer className="mt-6 text-xs text-gray-500">
+          App Creator: Nick Fazah — IT 9870
+        </footer>
+      </main>
     </div>
   );
 }
-
-const inputStyle = {
-  width: '100%',
-  padding: '10px',
-  marginTop: '5px',
-  borderRadius: '8px',
-  border: '1px solid #ccc',
-  fontSize: '16px'
-};
-
-const buttonStyle = {
-  padding: '10px 20px',
-  borderRadius: '8px',
-  background: '#333',
-  color: '#fff',
-  border: '1px solid #666',
-  cursor: 'pointer'
-};
-
-const activeButton = {
-  ...buttonStyle,
-  background: '#0066cc',
-  borderColor: '#004c99'
-};
-
-const calculateStyle = {
-  marginTop: '10px',
-  padding: '12px 20px',
-  width: '100%',
-  background: 'linear-gradient(to right, #00bfff, #0066cc)',
-  color: '#fff',
-  border: 'none',
-  borderRadius: '10px',
-  fontSize: '18px',
-  cursor: 'pointer'
-};
-
-const resultBox = {
-  marginTop: '20px',
-  padding: '15px',
-  background: '#004466',
-  borderRadius: '10px',
-  fontSize: '18px',
-  textAlign: 'center'
-};
