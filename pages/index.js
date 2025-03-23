@@ -1,4 +1,3 @@
-
 import Head from 'next/head';
 import { useState } from 'react';
 import { getSurfaceInterval } from '../lib/si-logic';
@@ -117,13 +116,14 @@ export default function Home() {
   );
 }
 
+// Input box style (reduced size by 25%)
 const inputStyle = {
   width: '100%',
-  padding: '6px 8px',
+  padding: '7.5px',
   marginTop: '5px',
-  borderRadius: '6px',
+  borderRadius: '8px',
   border: '1px solid #ccc',
-  fontSize: '14px'
+  fontSize: '12px'
 };
 
 const buttonStyle = {
